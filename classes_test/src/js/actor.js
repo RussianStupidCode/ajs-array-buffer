@@ -2,10 +2,16 @@ export default class Actor {
   constructor(attack, distance) {
     this.baseAttack = attack;
     this.distance = distance;
+    this._stoned = false;
   }
 
   get attack() {
-    return Math.max((1 - 0.1 * (this.distance - 1)) * this.baseAttack, 0);
+    const attack = Math.max((1 - 0.1 * (this.distance - 1)) * this.baseAttack, 0);
+    if (!this.stoned) {
+      return attack;
+    }
+
+    return Math.max(attack - Math.log2(this.distance) * 5, 0);
   }
 
   set attack(attack) {
@@ -13,6 +19,10 @@ export default class Actor {
   }
 
   get stoned() {
-    return Math.max(this.attack - Math.log2(this.distance) * 5, 0);
+    return this._stoned;
+  }
+
+  set stoned(stoned) {
+    this._stoned = stoned;
   }
 }
